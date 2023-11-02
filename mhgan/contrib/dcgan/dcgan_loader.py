@@ -9,7 +9,7 @@ import torch.backends.cudnn as cudnn
 import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
-from dcgan import gan_trainer
+from contrib.dcgan.dcgan import gan_trainer
 
 SEED_MAX = 2**32 - 1
 
