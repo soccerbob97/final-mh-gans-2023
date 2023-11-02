@@ -16,9 +16,9 @@ import pandas as pd
 from scipy.special import logit
 from sklearn.linear_model import LogisticRegression
 from sklearn.isotonic import IsotonicRegression
-from benchmark_tools.constants import METHOD
-import benchmark_tools.classification as btc
-import benchmark_tools.data_splitter as ds
+from mlpaper.constants import METHOD
+import mlpaper.classification as btc
+import mlpaper.data_splitter as ds
 
 LABEL = 'label'
 
