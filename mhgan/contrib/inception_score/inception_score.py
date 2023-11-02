@@ -61,11 +61,11 @@ def inception_score_fast(preds, splits=1):
     assert preds.shape == (N, INCEPTION_NUM_F)
 
     split_scores = []
-    for k in xrange(splits):
+    for k in range(splits):
         part = preds[k * (N // splits):(k+1) * (N // splits), :]
         py = np.mean(part, axis=0)
         scores = []
-        for i in xrange(part.shape[0]):
+        for i in range(part.shape[0]):
             pyx = part[i, :]
             scores.append(entropy(pyx, py))
         split_scores.append(np.exp(np.mean(scores)))

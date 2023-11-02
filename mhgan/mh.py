@@ -45,11 +45,16 @@ def binary_posterior(P0, P1):
 
 
 def disc_2_odds_ratio(P_disc):
-    odds_ratio = 1.0 / ((1.0 / P_disc) - 1.0)
+    P_disc = np.clip(P_disc, 1e-4, 1 - 1e-4)
+    try:
+      odds_ratio = 1.0 / ((1.0 / P_disc) - 1.0)
+    except:
+      print(P_disc, odds_ratio)
     return odds_ratio
 
 
 def odds_ratio_2_disc(odds_ratio):
+    odds_ratio = np.clip(odds_ratio, 1e-4, 1e4)
     P_disc = 1.0 / ((1.0 / odds_ratio) + 1.0)
     return P_disc
 
@@ -64,7 +69,12 @@ def accept_prob_MH_disc(P_disc_last, P_disc_new):
     # These asserts will also catch accidently using log or logistic probs
     assert np.all(0.0 <= P_disc_last) and np.all(P_disc_last <= 1.0)
     assert np.all(0.0 <= P_disc_new) and np.all(P_disc_new <= 1.0)
-
+    if P_disc_new == 0:
+      return 0
+    if P_disc_last == 0 or P_disc_new == 1:
+      return 1
+    if P_disc_last == P_disc_new:
+      return 0.5
     alpha = ((1.0 / P_disc_last) - 1.0) / ((1.0 / P_disc_new) - 1.0)
     # Use fmin so get alpha=1 on nan which results from 0 or 1 P_disc values
     # unclear which is the best value for alpha at the discontinuities.
@@ -167,7 +177,7 @@ def mh_sample(d_score, score_max=None, random=np.random):
 
     picked_round = 0
     alpha = 1.0
-    for ii in xrange(1, len(d_score)):
+    for ii in range(1, len(d_score)):
         if OR[picked_round] <= OR_U[ii]:
             alpha = accept_prob_MH_disc(d_score[picked_round], d_score[ii])
             picked_round = ii
@@ -185,7 +195,7 @@ def cumm_mh_sample_distn(d_score, w):
     p_idx[0] = 1.0
     val = np.zeros(rounds)
     val[0] = w[0]
-    for ii in xrange(1, rounds):
+    for ii in range(1, rounds):
         P_disc_new = np.float_(d_score[ii])
 
         # Note this is bit of wasted computation here since p_idx[ii:] == 0
@@ -208,7 +218,7 @@ if __name__ == '__main__':
 
     t0 = 0.0
     t1 = 0.0
-    for rr in xrange(1000):
+    for rr in range(1000):
         test_accept_prob_MH_disc()  # Run this test too
 
         d_score = np.random.rand(640)
@@ -225,5 +235,5 @@ if __name__ == '__main__':
         idx2, _ = mh_sample(d_score, random=r)
         t1 += (time() - t)
 
-        print idx, idx2
+        print(idx, idx2)
         assert idx == idx2

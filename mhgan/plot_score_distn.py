@@ -79,7 +79,7 @@ def base(score, score_max=None):
 
 def converge_series(disc_f, p_rnd, q_rnd, runs=100, N=1000):
     X = np.zeros((runs, N + 1))
-    for rr in xrange(runs):
+    for rr in range(runs):
         s0 = disc_f(p_rnd(1))
         s_fake = disc_f(q_rnd(N))
         s_ = np.concatenate((s0, s_fake))
@@ -109,7 +109,7 @@ score_delta = pd.DataFrame(data=0.0,
                            index=pickers.keys(), columns=scores.columns,
                            dtype=float)
 score_end = {}
-for rr in xrange(runs):
+for rr in range(runs):
     init_idx = np.random.choice(len(scores_real_df))
     for method in scores:
         score_bound = np.max(scores_fake_df[method].values)

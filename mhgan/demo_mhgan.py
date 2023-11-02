@@ -133,7 +133,7 @@ def batched_gen_and_disc(gen_and_disc, n_batches, batch_size):
         assumed to be multiple of batch size
     '''
     X, scores = zip(*[validate(gen_and_disc(batch_size))
-                      for _ in xrange(n_batches)])
+                      for _ in range(n_batches)])
     X = np.concatenate(X, axis=0)
     scores = pd.concat(scores, axis=0, ignore_index=True)
     return X, scores
@@ -219,7 +219,9 @@ def enhance_samples_series(g_d_f, scores_real_df, clf_df,
     picked = [None] * n_images
     cap_out = [None] * n_images
     alpha = [None] * n_images
-    for nn in xrange(n_images):
+    for nn in range(n_images):
+        if nn % 100 == 99:
+            print("image number:", nn)
         X_, scores_fake_df = \
             batched_gen_and_disc(g_d_f, chain_batches, batch_size)
         picked_, cc, aa = \
@@ -346,7 +348,9 @@ print('start')
 # Reference in stat test: base discriminator, raw for no calibration
 ref_method = (BASE_D, 'raw')
 incep_ref = BASE_D + '_iso_base'
-n_split = 80  # Number of splits in inception score
+n_split = 10  # Number of splits in inception score
+# this was originally 80, but inception score just evaluates the epoch
+# so doesn't need to be as high
 n_score = 64 * n_split  # Total images to generate for benchmark
 banner_fmt = '-' * 10 + ' %d ' + '-' * 10
 

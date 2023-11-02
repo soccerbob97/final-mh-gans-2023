@@ -69,7 +69,7 @@ CALIB_CURVES = OrderedDict([('none', BASE_D + '_raw'),
 
 agg_perf = {}
 Z = {}
-for ii in xrange(MAX_ITER):
+for ii in range(MAX_ITER):
     # Assuming in current dir for now!
     fname = os.path.join(opt.input, '%d_scores.csv' % ii)
 

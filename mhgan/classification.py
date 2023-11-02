@@ -191,13 +191,13 @@ def calibrate_pred_df(pred_df, y_true, calib_frac=0.5, calibrators=CALIB_DICT):
     y_true_train, y_true_test = y_true[idx], y_true[~idx]
 
     cols = pd.MultiIndex.from_product([pred_df.columns, calibrators.keys()])
-    pred_calib_df = pd.DataFrame(index=xrange(len(y_true_test)), columns=cols,
+    pred_calib_df = pd.DataFrame(index=range(len(y_true_test)), columns=cols,
                                  dtype=float)
     clf_df = pd.Series(index=cols, dtype=object)
     for method in pred_df:
         y_prob = pred_df[method].values
         y_prob_train, y_prob_test = y_prob[idx], y_prob[~idx]
-        for calib_name, calib in calibrators.iteritems():
+        for calib_name, calib in iter(calibrators.items()):
             clf = calib()
             clf.fit(y_prob_train, y_true_train)
             clf_df[(method, calib_name)] = clf

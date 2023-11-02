@@ -174,7 +174,7 @@ def gan_trainer(device, data_loader, batch_size, nz, ngf, ndf, lr, beta1, ngpu,
             label = torch.full((batch_size,), real_label, device=device)
 
             output = netD(real_cpu)
-            errD_real = criterion(output, label)
+            errD_real = criterion(output.float(), label.float())
             errD_real.backward()
             D_x = output.mean().item()
 
@@ -183,7 +183,7 @@ def gan_trainer(device, data_loader, batch_size, nz, ngf, ndf, lr, beta1, ngpu,
             fake = netG(noise)
             label.fill_(fake_label)
             output = netD(fake.detach())
-            errD_fake = criterion(output, label)
+            errD_fake = criterion(output.float(), label.float())
             errD_fake.backward()
             D_G_z1 = output.mean().item()
             errD = errD_real + errD_fake
@@ -195,7 +195,7 @@ def gan_trainer(device, data_loader, batch_size, nz, ngf, ndf, lr, beta1, ngpu,
             netG.zero_grad()
             label.fill_(real_label)  # fake labels are real for generator cost
             output = netD(fake)
-            errG = criterion(output, label)
+            errG = criterion(output.float(), label.float())
             errG.backward()
             D_G_z2 = output.mean().item()
             optimizerG.step()
@@ -210,7 +210,7 @@ def gan_trainer(device, data_loader, batch_size, nz, ngf, ndf, lr, beta1, ngpu,
             label = torch.full((batch_size,), real_label, device=device)
 
             output = netD_side(real_cpu)
-            errD_real = criterion(output, label)
+            errD_real = criterion(output.float(), label.float())
             errD_real.backward()
             _ = output.mean().item()
 
@@ -219,16 +219,16 @@ def gan_trainer(device, data_loader, batch_size, nz, ngf, ndf, lr, beta1, ngpu,
             fake = netG(noise)
             label.fill_(fake_label)
             output = netD_side(fake.detach())
-            errD_fake = criterion(output, label)
+            errD_fake = criterion(output.float(), label.float())
             errD_fake.backward()
             _ = output.mean().item()
             errD = errD_real + errD_fake
             optimizerD_side.step()
-
-            print('[%d][%d/%d] Loss_D: %.4f '
-                  'Loss_G: %.4f D(x): %.4f D(G(z)): %.4f / %.4f'
-                  % (epoch, i, len(data_loader),
-                     errD.item(), errG.item(), D_x, D_G_z1, D_G_z2))
+            if i % 50 == 49:
+              print('[%d][%d/%d] Loss_D: %.4f '
+                    'Loss_G: %.4f D(x): %.4f D(G(z)): %.4f / %.4f'
+                    % (epoch, i, len(data_loader),
+                      errD.item(), errG.item(), D_x, D_G_z1, D_G_z2))
             if outf is not None and i % LOG_BLOCK_SIZE == 0:
                 vutils.save_image(real_cpu,
                                   '%s/real_samples.png' % outf,
