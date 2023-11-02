@@ -20,10 +20,10 @@ import pandas as pd
 from scipy.special import expit as logistic
 import torch
 import torchvision.utils as vutils
-import benchmark_tools.benchmark_tools as bt
-import benchmark_tools.classification as btc
-import benchmark_tools.sciprint as sp
-from benchmark_tools.constants import METHOD, METRIC
+import mlpaper.mlpaper as bt
+import mlpaper.classification as btc
+import mlpaper.sciprint as sp
+from mlpaper.constants import METHOD, METRIC
 from contrib.dcgan.dcgan import gan_trainer, BASE_D
 from contrib.dcgan.dcgan_loader import get_data_loader, get_opts
 from contrib.inception_score.inception_score import \
