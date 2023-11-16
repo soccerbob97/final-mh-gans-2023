@@ -382,7 +382,7 @@ if DBG:  # Just for quick check of code
     T = trainer_dummy()
 else:
     data_loader = get_data_loader(opt.dataset, opt.dataroot, opt.workers,
-                                  opt.imageSize, batch_size)
+                                  opt.imageSize, batch_size, opt.cifar_class)
     T = gan_trainer(device=device, data_loader=data_loader,
                     batch_size=batch_size, nz=opt.nz, ngf=opt.ngf,
                     ndf=opt.ndf, lr=opt.lr, beta1=opt.beta1, ngpu=opt.ngpu,

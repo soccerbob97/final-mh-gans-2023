@@ -10,6 +10,7 @@ import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 from contrib.dcgan.dcgan import gan_trainer
+#import numpy as np
 
 SEED_MAX = 2**32 - 1
 
@@ -17,6 +18,7 @@ SEED_MAX = 2**32 - 1
 def get_opts(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', required=True, help='cifar10 | lsun | imagenet | folder | lfw | fake')  # noqa: E402
+    parser.add_argument('--cifar_class', required=False, type=int, default=-1, help='cifar10 class index')  # noqa: E402
     parser.add_argument('--dataroot', required=True, help='path to dataset')
     parser.add_argument('--workers', type=int, default=2, help='number of data loading workers')  # noqa: E402
     parser.add_argument('--batchSize', type=int, default=64, help='input batch size')  # noqa: E402
@@ -44,7 +46,7 @@ def get_opts(args=None):
     return opt
 
 
-def get_data_loader(dataset, dataroot, workers, image_size, batch_size):
+def get_data_loader(dataset, dataroot, workers, image_size, batch_size, cifar_class=-1):
     if dataset in ['imagenet', 'folder', 'lfw']:
         # folder dataset
         dataset = dset.ImageFolder(root=dataroot,
@@ -65,6 +67,7 @@ def get_data_loader(dataset, dataroot, workers, image_size, batch_size):
                                                      (0.5, 0.5, 0.5)),
                             ]))
     elif dataset == 'cifar10':
+        
         dataset = dset.CIFAR10(root=dataroot, download=True,
                                transform=transforms.Compose([
                                    transforms.Resize(image_size),
@@ -72,6 +75,9 @@ def get_data_loader(dataset, dataroot, workers, image_size, batch_size):
                                    transforms.Normalize((0.5, 0.5, 0.5),
                                                         (0.5, 0.5, 0.5)),
                                ]))
+        if cifar_class != -1:
+            class_idx = torch.where(torch.array(dataset.targets) == cifar_class)
+            dataset = torch.utils.data.Subset(dataset, class_idx)
     elif dataset == 'mnist':
         dataset = dset.MNIST(root=dataroot, train=True, download=True,
                              transform=transforms.Compose([
