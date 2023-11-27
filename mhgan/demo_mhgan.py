@@ -314,6 +314,20 @@ def image_dump(X, name, dir_):
     vutils.save_image(torch.tensor(X), fname, normalize=True)
 
 
+def image_dump_individual(X, name, dir_):
+    '''This is to save each image separately, rather than in a grid.
+
+    X : ndarray, shape (n, nc, image_size, image_size)
+    name : str
+    '''
+    batch_size, nc, image_size, _ = X.shape
+    assert X.shape == (batch_size, nc, image_size, image_size)
+
+    for i in batch_size:
+        fname = os.path.join(dir_, '%s_%d.png' % (name, i))
+        vutils.save_image(torch.tensor(X[i, :, :, :]), fname, normalize=True)
+
+
 def get_inception_score_precomp(all_samples):
     '''
     all_samples : ndarray, shape (n, nc, image_size, image_size)
