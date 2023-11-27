@@ -37,6 +37,7 @@ NA_LEVEL = '-'
 DBG = False  # Use bogus incep scores for faster debugging
 SKIP_INIT_EVAL = True
 SAVE_IMAGES = True
+SAVE_INDIVIDUAL = False
 INCEP_SCORE = True
 
 INCEP = 'incep'
@@ -441,10 +442,11 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
         for method in picked:
             image_dump(X[picked[method].values], '%d_%s' % (epoch, method),
                        dir_=outf)
-        if epoch >= START_INDIVIDUAL and epoch % SAVE_INCR == 0:
-            for method in picked:
-                image_dump_individual(X[picked[method].values], '%d_%s' % (epoch, method),
-                           dir_=outf)
+        if SAVE_INDIVIDUAL:
+            if epoch >= START_INDIVIDUAL and epoch % SAVE_INCR == 0:
+                for method in picked:
+                    image_dump_individual(X[picked[method].values], '%d_%s' % (epoch, method),
+                               dir_=outf)
 
     if INCEP_SCORE:
         # Bigger dump for scoring
