@@ -41,6 +41,8 @@ INCEP_SCORE = True
 
 INCEP = 'incep'
 
+START_INDIVIDUAL = 30
+SAVE_INCR = 5
 
 def const_dict(val):
     D = defaultdict(lambda: val)
@@ -439,6 +441,10 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
         for method in picked:
             image_dump(X[picked[method].values], '%d_%s' % (epoch, method),
                        dir_=outf)
+        if epoch >= START_INDIVIDUAL and epoch % SAVE_INCR == 0:
+            for method in picked:
+                image_dump_individual(X[picked[method].values], '%d_%s' % (epoch, method),
+                           dir_=outf)
 
     if INCEP_SCORE:
         # Bigger dump for scoring
