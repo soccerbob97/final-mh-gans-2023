@@ -76,8 +76,10 @@ def get_data_loader(dataset, dataroot, workers, image_size, batch_size, cifar_cl
                                                         (0.5, 0.5, 0.5)),
                                ]))
         if cifar_class != -1:
-            class_idx = torch.where(torch.array(dataset.targets) == cifar_class)
-            dataset = torch.utils.data.Subset(dataset, class_idx)
+            idx = [i for i in range(len(dataset.targets)) if dataset.targets[i] == cifar_class]
+            dataset.targets = [dataset.targets[index] for index in idx]
+            dataset.data = dataset.data[idx]
+
     elif dataset == 'mnist':
         dataset = dset.MNIST(root=dataroot, train=True, download=True,
                              transform=transforms.Compose([
