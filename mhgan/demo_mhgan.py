@@ -37,13 +37,13 @@ NA_LEVEL = '-'
 DBG = False  # Use bogus incep scores for faster debugging
 SKIP_INIT_EVAL = True
 SAVE_IMAGES = True
-SAVE_INDIVIDUAL = False
+SAVE_INDIVIDUAL = True
 INCEP_SCORE = True
 
 INCEP = 'incep'
 
-START_INDIVIDUAL = 30
-SAVE_INCR = 5
+START_INDIVIDUAL = 40
+SAVE_INCR = 10
 
 def const_dict(val):
     D = defaultdict(lambda: val)
@@ -437,7 +437,7 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
     if SAVE_IMAGES:
         print('image dumps...')
         # Some image dumps in case we want to actually look at generated images
-        X, picked, _, _ = enhance_samples_series(g_d_f, scores_real_df, clf_df)
+        X, picked, _, _ = enhance_samples_series(g_d_f, scores_real_df, clf_df, n_images=1000)
         picked.columns = cl.flat_cols(picked.columns, name=METHOD)
         for method in picked:
             image_dump(X[picked[method].values], '%d_%s' % (epoch, method),
@@ -447,6 +447,10 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
                 for method in picked:
                     image_dump_individual(X[picked[method].values], '%d_%s' % (epoch, method),
                                dir_=outf)
+        else:
+            for method in picked:
+                image_dump(X[picked[method].values], '%d_%s' % (epoch, method),
+                          dir_=outf)
 
     if INCEP_SCORE:
         # Bigger dump for scoring
