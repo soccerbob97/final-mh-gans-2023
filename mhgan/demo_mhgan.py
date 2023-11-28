@@ -42,7 +42,7 @@ INCEP_SCORE = True
 
 INCEP = 'incep'
 
-START_INDIVIDUAL = 40
+START_INDIVIDUAL = 0
 SAVE_INCR = 10
 
 def const_dict(val):
@@ -326,8 +326,9 @@ def image_dump_individual(X, name, dir_):
     batch_size, nc, image_size, _ = X.shape
     assert X.shape == (batch_size, nc, image_size, image_size)
 
-    for i in batch_size:
+    for i in range(batch_size):
         fname = os.path.join(dir_, '%s_%d.png' % (name, i))
+        #print("file name ", fname)
         vutils.save_image(torch.tensor(X[i, :, :, :]), fname, normalize=True)
 
 
@@ -376,6 +377,10 @@ opt = get_opts()
 batch_size = opt.batchSize
 outf = os.path.abspath(os.path.expanduser(opt.outf))
 outf = mkdtemp(dir=outf)
+final_outf_mh_gan = os.path.join(outf,"final", "mh-gan")
+os.makedirs(final_outf_mh_gan)
+final_outf_gan = os.path.join(outf,"final", "gan")
+os.makedirs(final_outf_gan)
 
 print('using dump folder:')
 print(outf)
@@ -411,6 +416,7 @@ if SKIP_INIT_EVAL:
     _ = next(T)
 
 agg_perf = {}  # Use dict so that index gets saved on pd concat
+
 for epoch, (_, g_d_f, scores_real) in enumerate(T):
     print(banner_fmt % epoch)
 
@@ -444,9 +450,11 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
                        dir_=outf)
         if SAVE_INDIVIDUAL:
             if epoch >= START_INDIVIDUAL and epoch % SAVE_INCR == 0:
-                for method in picked:
-                    image_dump_individual(X[picked[method].values], '%d_%s' % (epoch, method),
-                               dir_=outf)
+               image_dump_individual(X[picked["base_iso_MH"].values], '%s' % ("base_iso_MH"),
+                               dir_=final_outf_mh_gan)
+               image_dump_individual(X[picked["base_iso_base"].values], '%s' % ("base_iso_base"),
+                               dir_=final_outf_gan)
+               #print("saving image")
 
     if INCEP_SCORE:
         # Bigger dump for scoring
