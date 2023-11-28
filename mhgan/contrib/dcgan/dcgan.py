@@ -96,7 +96,7 @@ class Discriminator(nn.Module):
 
 def gan_trainer(device, data_loader, batch_size, nz, ngf, ndf, lr, beta1, ngpu,
                 netG_file='', netD_file='', outf=None, calib_frac=0.0):
-    nc = 3
+    nc = 1
     criterion = nn.BCELoss()
     # Basically an enum here
     fake_label = 0
