@@ -447,10 +447,6 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
                 for method in picked:
                     image_dump_individual(X[picked[method].values], '%d_%s' % (epoch, method),
                                dir_=outf)
-        else:
-            for method in picked:
-                image_dump(X[picked[method].values], '%d_%s' % (epoch, method),
-                          dir_=outf)
 
     if INCEP_SCORE:
         # Bigger dump for scoring
