@@ -443,7 +443,11 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
     if SAVE_IMAGES:
         print('image dumps...')
         # Some image dumps in case we want to actually look at generated images
-        X, picked, _, _ = enhance_samples_series(g_d_f, scores_real_df, clf_df, n_images=1000)
+        if SAVE_INDIVIDUAL and epoch >= START_INDIVIDUAL and epoch % SAVE_INCR == 0:
+            X, picked, _, _ = enhance_samples_series(g_d_f, scores_real_df, clf_df, n_images=1000)
+        else:
+            X, picked, _, _ = enhance_samples_series(g_d_f, scores_real_df, clf_df, n_images=64)
+
         picked.columns = cl.flat_cols(picked.columns, name=METHOD)
         for method in picked:
             image_dump(X[picked[method].values], '%d_%s' % (epoch, method),
