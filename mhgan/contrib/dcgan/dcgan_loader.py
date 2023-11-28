@@ -46,7 +46,7 @@ def get_opts(args=None):
     return opt
 
 
-def get_data_loader(dataset, dataroot, workers, image_size, batch_size, cifar_class=-1):
+def get_data_loader(dataset, dataroot, workers, image_size, batch_size, cifar_class=-1, fashion_class=-1):
     if dataset in ['imagenet', 'folder', 'lfw']:
         # folder dataset
         dataset = dset.ImageFolder(root=dataroot,
@@ -89,6 +89,19 @@ def get_data_loader(dataset, dataroot, workers, image_size, batch_size, cifar_cl
                                  transforms.Normalize((0.5, 0.5, 0.5),
                                                       (0.5, 0.5, 0.5)),
                              ]))
+    elif dataset == 'fashion':
+        dataset = dset.FashionMNIST(root=dataroot, train=True, download=True,
+                             transform=transforms.Compose([
+                                 transforms.Resize(image_size),
+                                 transforms.CenterCrop(image_size),
+                                 transforms.ToTensor(),
+                                 transforms.Normalize((0.5, 0.5, 0.5),
+                                                      (0.5, 0.5, 0.5)),
+                             ]))
+        if fashion_class != -1:
+            idx = [i for i in range(len(dataset.targets)) if dataset.targets[i] == fashion_class]
+            dataset.targets = [dataset.targets[index] for index in idx]
+            dataset.data = dataset.data[idx]
     elif dataset == 'fake':
         dataset = dset.FakeData(image_size=(3, image_size, image_size),
                                 transform=transforms.ToTensor())
