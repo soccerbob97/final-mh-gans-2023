@@ -454,9 +454,9 @@ for epoch, (_, g_d_f, scores_real) in enumerate(T):
                        dir_=outf)
         if SAVE_INDIVIDUAL:
             if epoch >= START_INDIVIDUAL and epoch % SAVE_INCR == 0:
-               image_dump_individual(X[picked["base_iso_MH"].values], '%s' % ("base_iso_MH"),
+               image_dump_individual(X[picked["base_iso_MH"].values], '%s_%s' % (epoch, "base_iso_MH"),
                                dir_=final_outf_mh_gan)
-               image_dump_individual(X[picked["base_iso_base"].values], '%s' % ("base_iso_base"),
+               image_dump_individual(X[picked["base_iso_base"].values], '%s_%s' % (epoch, "base_iso_base"),
                                dir_=final_outf_gan)
                #print("saving image")
 
